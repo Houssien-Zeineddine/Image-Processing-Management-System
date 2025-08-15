@@ -2,6 +2,7 @@ const { Queue, Worker } = require('bullmq')
 const connection = require('../redis/connection')
 const sharp = require('sharp')
 const Image = require('../models/Image')
+const Job = require('../models/job')
 
 const advancedQueue = new Queue('advancedQueue', { connection })
 
