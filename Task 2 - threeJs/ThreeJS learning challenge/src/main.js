@@ -13,3 +13,16 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight)
 
+function animate() {
+  requestAnimationFrame(animate)
+
+  torus.rotation.x += 0.01
+  torus.rotation.y += 0.01
+  torus.rotation.z += 0.01
+
+  Controls.update()
+
+  renderer.render(scene, camera)
+}
+
+animate()
