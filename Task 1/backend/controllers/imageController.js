@@ -1,6 +1,7 @@
 const Image = require('../models/Image')
 const FileType = require('file-type')
 const Job = require('../models/job')
+const { imageQueue } = require('./jobProcessorController')
 
 const uploadImage = async (req, res) => {
     try {
@@ -19,7 +20,7 @@ const uploadImage = async (req, res) => {
             fileSize: size
         })
 
-        //create job
+        //save job to database
         const newJob = await Job.create({
             originalImageId: newImage,
             status: 'pending',
@@ -30,6 +31,8 @@ const uploadImage = async (req, res) => {
             ],
             userEmail
         })
+
+        await imageQueue.add('resize-image', { jobId: newJob._id})
 
         res.json({ id: newImage._id, name: newImage.name, filename: newImage.filename })
     } catch (error) {
