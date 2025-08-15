@@ -47,4 +47,8 @@ const worker = new Worker('imageQueue', async job => {
             console.log(`Resized ${originalImage.name} to ${target.width}x${target.height}`);
         }
     }
-})
+
+    dbJob.status = 'completed'
+    dbJob.completedAt = new Date()
+    await dbJob.save()
+}, { connection })
