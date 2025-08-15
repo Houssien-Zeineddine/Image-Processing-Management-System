@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const imageRoutes = require('./routes/imageRoutes')
+const jobRoutes = require('./routes/jobRoutes')
 
 const app = express()
 
@@ -10,6 +11,7 @@ app.use(express.json())
 
 //routes
 app.use('/api/images', imageRoutes);
+app.use('/api/jobs', jobRoutes);
 
 //connect to DB and start server
 const startServer = async () => {
