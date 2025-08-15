@@ -35,8 +35,14 @@ const worker = new Worker('imageQueue', async job => {
                 fileData: resizedBuffer,
                 filesize: resizedBuffer.length
             })
-        } catch( error ) {
 
+            target.status = 'completed'
+            dbJob.progress = Math.floor(((i + 1) / dbJob.targetDimensions.length) * 100)
+            await dbJob.save()
+
+            console.log(`Resized ${originalImage.name} to ${target.width}x${target.height}`);
+        } catch( error ) {
+            
         }
     }
 })
