@@ -1,5 +1,6 @@
 const Image = require('../models/Image')
 const FileType = require('file-type')
+const Job = require('../models/job')
 
 const uploadImage = async (req, res) => {
     try {
@@ -10,11 +11,24 @@ const uploadImage = async (req, res) => {
 
         if (!name) return res.status(400).json({ error: 'Image name is required' })
         
+        //save original image
         const newImage = await Image.create({
             name,
             filename: originalname,
             fileData: buffer,
             fileSize: size
+        })
+
+        //create job
+        const newJob = await Job.create({
+            originalImageId: newImage,
+            status: 'pending',
+            targetDimensions: [
+                { width: 800, height: 600 },
+                { width: 400, height: 300 },
+                { width: 200, height: 150 },
+            ],
+            userEmail
         })
 
         res.json({ id: newImage._id, name: newImage.name, filename: newImage.filename })
