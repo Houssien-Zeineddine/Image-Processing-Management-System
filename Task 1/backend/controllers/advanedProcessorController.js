@@ -1,6 +1,7 @@
 const { Queue, Worker } = require('bullmq')
 const connection = require('../redis/connection')
 const sharp = require('sharp')
+const Image = require('../models/image')
 
 const advancedQueue = new Queue('advancedQueue', { connection })
 
@@ -87,5 +88,12 @@ const advancedWorker = new Worker('advancedQueue', async job => {
             newBuffer[idx + 3] = px.a;
         }
     }
+
+    await Image.create({
+        name: `${originalImage.name}-enhanced`,
+        filename: originalImage.filename,
+        fileData: newBuffer,
+        fileSize: newBuffer.length
+    })
 
 })
