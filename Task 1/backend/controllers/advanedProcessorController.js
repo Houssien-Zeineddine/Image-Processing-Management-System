@@ -100,4 +100,12 @@ const advancedWorker = new Worker('advancedQueue', async job => {
     dbJob.completedAt = new Date();
     await dbJob.save();
 
-})
+    if (dbJob.userEmail) {
+        const subject = `Advanced Image Processing Completed: ${originalImage.filename}`;
+        const html = `<h3>Your advanced image processing job is complete!</h3>
+            <p><b>Original file:</b> ${originalImage.filename}</p>
+            <p><b>Processed image:</b> sharpened/enhanced successfully</p>`;
+        await sendEmail(dbJob.userEmail, subject, html);
+    }
+
+}, { connection });
