@@ -10,3 +10,8 @@ const getJobById = async (req, res) => {
     if(!job) return res.status(404).json({ error: 'Job not found' })
     res.json(job)
 }
+
+module.exports = {
+    getJobs,
+    getJobById
+}
