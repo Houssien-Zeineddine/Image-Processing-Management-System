@@ -24,6 +24,8 @@ const uploadAdvancedImage = async (req, res) => {
             userEmail
         })
 
+        await advancedQueue.add('enhance-image', { jobId: newJob._id })
+
     } catch (error) {
 
     }
