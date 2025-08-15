@@ -23,11 +23,8 @@ const uploadImage = async (req, res) => {
 }
 
 const getImages = async (req, res) => {
-    try {
-
-    } catch (error) {
-
-    }
+    const images = await Image.find().select('-fileData')
+    res.json(images)
 }
 
 const getImageById = async (req, res) => {
@@ -48,5 +45,6 @@ const deleteImage = async (req, res) => {
 
 
 module.exports = {
-    uploadImage
+    uploadImage,
+    getImages
 }
