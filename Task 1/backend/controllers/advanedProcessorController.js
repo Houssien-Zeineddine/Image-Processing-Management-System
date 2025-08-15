@@ -1,5 +1,6 @@
 const { Queue, Worker } = require('bullmq')
 const connection = require('../redis/connection')
+const sharp = require('sharp')
 
 const advancedQueue = new Queue('advancedQueue', { connection })
 
@@ -74,5 +75,17 @@ const advancedWorker = new Worker('advancedQueue', async job => {
     }
 
     const processedPixels = applyKernel(pixels, sharpenKernel)
+
+    const newBuffer = Buffer.alloc(width * height * 4);
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const idx = (y * width + x) * 4;
+            const px = processedPixels[y][x];
+            newBuffer[idx] = px.r;
+            newBuffer[idx + 1] = px.g;
+            newBuffer[idx + 2] = px.b;
+            newBuffer[idx + 3] = px.a;
+        }
+    }
 
 })
