@@ -17,6 +17,13 @@ const uploadAdvancedImage = async (req, res) => {
             fileSize: size
         })
 
+        const newJob = await Job.create({
+            originalImageId: newImage,
+            status: 'pending',
+            targetDimensions: [], // No resizing, only enhancement
+            userEmail
+        })
+
     } catch (error) {
 
     }
