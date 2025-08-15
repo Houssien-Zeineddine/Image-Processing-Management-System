@@ -51,7 +51,7 @@ const worker = new Worker('imageQueue', async job => {
     await dbJob.save()
 }, {
     connection,
-    defaultJobOptions: {
+    defaultJobOptions: { //clean completed jobs automatically
         removeOnComplete: 100, 
         removeOnFail: 50
     }
