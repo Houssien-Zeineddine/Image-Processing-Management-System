@@ -1,4 +1,5 @@
 const Image = require('../models/Image')
+const FileType = require('file-type')
 
 const uploadImage = async (req, res) => {
     try {
@@ -28,11 +29,13 @@ const getImages = async (req, res) => {
 }
 
 const getImageById = async (req, res) => {
-    try {
+    const image = await Image.findById(req.params.id)
+    if(!image) return res.status(404).json({ error: 'Image not found' })
+    
+    const type = await FileType.fileTypeFromBuffer(image.fileData)
 
-    } catch (error) {
-
-    }
+    res.set('Content-Type', type.mime)
+    res.send(image.fileData)
 }
 
 const deleteImage = async (req, res) => {
@@ -46,5 +49,6 @@ const deleteImage = async (req, res) => {
 
 module.exports = {
     uploadImage,
-    getImages
+    getImages,
+    getImageById
 }
