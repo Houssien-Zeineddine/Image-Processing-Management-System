@@ -49,14 +49,20 @@ const worker = new Worker('imageQueue', async job => {
     dbJob.status = 'completed'
     dbJob.completedAt = new Date()
     await dbJob.save()
-}, { connection })
+}, {
+    connection,
+    defaultJobOptions: {
+        removeOnComplete: 100, 
+        removeOnFail: 50
+    }
+})
 
 worker.on('ready', () => {
-    console.log('🚀 Worker is ready and connected to Redis');
+    console.log('Worker is ready and connected to Redis');
 });
 
 worker.on('failed', (job, err) => {
-    console.error(`❌ Job ${job.id} failed:`, err);
+    console.error(`Job ${job.id} failed:`, err);
 });
 
 module.exports = { imageQueue }
