@@ -42,7 +42,9 @@ const worker = new Worker('imageQueue', async job => {
 
             console.log(`Resized ${originalImage.name} to ${target.width}x${target.height}`);
         } catch( error ) {
-            
+            target.status = 'failed'
+            await dbJob.save()
+            console.log(`Resized ${originalImage.name} to ${target.width}x${target.height}`);
         }
     }
 })
