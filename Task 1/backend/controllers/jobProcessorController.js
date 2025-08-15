@@ -3,6 +3,7 @@ const Job = require('../models/job')
 const Image = require('../models/Image')
 const sharp = require('sharp')
 const connection = require('../redis/connection')
+const sendEmail = require('../utils/sendEmail')
 
 //create a queue
 const imageQueue = new Queue('imageQueue', { connection })
@@ -49,6 +50,25 @@ const worker = new Worker('imageQueue', async job => {
     dbJob.status = 'completed'
     dbJob.completedAt = new Date()
     await dbJob.save()
+
+    const processingTimeMs = Date.now() - startTime
+    const processingTime = `${Math.floor(processingTimeMs / 1000)}s`
+
+    if (dbJob.userEmail) {
+        const subject = `Image Processing Completed: ${originalImage.filename}`;
+        const html = `
+            <h3>Your image processing job is complete!</h3>
+            <p><b>Original file:</b> ${originalImage.filename}</p>
+            <p><b>Resized dimensions:</b></p>
+            <ul>
+                ${dbJob.targetDimensions.map(t => `<li>${t.width}x${t.height} - ${t.status}</li>`).join('')}
+            </ul>
+            <p><b>Processing time:</b> ${processingTime}</p>`
+
+            await sendEmail(dbJob.userEmail, subject, html)
+    } else {
+        console.log('Job completed')
+    }
 }, {
     connection,
     defaultJobOptions: { //clean completed jobs automatically
