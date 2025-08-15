@@ -14,6 +14,8 @@ const worker = new Worker('imageQueue', async job => {
 
     if (!dbJob) throw new Error('Job not Found')
 
+    const startTime = Date.now()
+
     dbJob.status = 'processing'
     dbJob.startedAt = new Date()
     await dbJob.save()

@@ -1,4 +1,4 @@
-require('dotenv')
+require('dotenv').config()
 
 const nodemailer = require('nodemailer')
 
@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
     secure: false,
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASWORD
+        pass: process.env.EMAIL_PASSWORD
     },
     tls: {
         ciphers: 'SSLv3',
@@ -25,7 +25,7 @@ const sendEmail = async (to, subject, html) => {
     }
 
     try {
-        await transporter.sendEmail(mailOptions)
+        await transporter.sendMail(mailOptions)
         console.log(`Email sent to ${to}`)
     } catch ( error ) {
         console.log('Failed to send email:', error)
