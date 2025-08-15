@@ -36,4 +36,43 @@ const advancedWorker = new Worker('advancedQueue', async job => {
         pixels.push(row)
     }
 
+    const sharpenKernel = [
+        [0, -1, 0],
+        [-1, 5, -1],
+        [0, -1, 0]
+    ];
+
+    const applyKernel = (pixels, kernel) => {
+        const output = []
+        const kCenter = Math.floor(kernel.length / 2)
+
+        for (let y = 0; y < pixels.length; y++) {
+            const row = []
+            for (let x = 0; x < pixels[y].length; x++) {
+                let r = 0, g = 0, b = 0
+                for (let ky = 0; ky < kernel.length; ky++) {
+                    for (let kx = 0; kx < kernel[0].length; kx++) {
+                        const yy = y + ky - kCenter;
+                        const xx = x + kx - kCenter;
+                        if (yy >= 0 && yy < pixels.length && xx >= 0 && xx < pixels[0].length) {
+                            r += pixels[yy][xx].r * kernel[ky][kx];
+                            g += pixels[yy][xx].g * kernel[ky][kx];
+                            b += pixels[yy][xx].b * kernel[ky][kx];
+                        }
+                    }
+                }
+                row.push({
+                    r: Math.min(Math.max(Math.round(r), 0), 255),
+                    g: Math.min(Math.max(Math.round(g), 0), 255),
+                    b: Math.min(Math.max(Math.round(b), 0), 255),
+                    a: pixels[y][x].a
+                })
+            }
+            output.push(row)
+        }
+        return output
+    }
+
+    const processedPixels = applyKernel(pixels, sharpenKernel)
+
 })
