@@ -26,7 +26,9 @@ const uploadAdvancedImage = async (req, res) => {
 
         await advancedQueue.add('enhance-image', { jobId: newJob._id })
 
-    } catch (error) {
+        res.json({ message: 'Advanced processing started', jobId: newJob._id, imageId: newImage._id })
 
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
 }
