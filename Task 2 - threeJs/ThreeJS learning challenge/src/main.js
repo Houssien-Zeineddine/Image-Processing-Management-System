@@ -2,6 +2,8 @@ import './style.css'
 
 import * as THREE from 'three'
 
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
+
 //scene
 const scene = new THREE.Scene()
 
@@ -38,12 +40,16 @@ const gridHelper = new THREE.GridHelper(200, 50)
 
 scene.add(gridHelper, lightHelper)
 
+const controls = new OrbitControls(camera, renderer.domElement)
+
 function animate() {
   requestAnimationFrame(animate)
 
   sphere.rotation.x += 0.01
   sphere.rotation.y += 0.005
   sphere.rotation.z += 0.01
+
+  controls.update()
 
   renderer.render( scene, camera ) 
 }
