@@ -8,7 +8,7 @@ const uploadImage = async (req, res) => {
         if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
         
         const { originalname, buffer, size } = req.file
-        const { name, email } = req.body
+        const { name, userEmail } = req.body
 
         if (!name) return res.status(400).json({ error: 'Image name is required' })
         
