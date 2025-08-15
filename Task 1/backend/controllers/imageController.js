@@ -34,7 +34,11 @@ const uploadImage = async (req, res) => {
 
         await imageQueue.add('resize-image', { jobId: newJob._id})
 
-        res.json({ id: newImage._id, name: newImage.name, filename: newImage.filename })
+        res.json({ 
+            message: 'Image uploaded successfully. Processing in background',
+            jobId: newJob._id,
+            imageId: newImage._id
+        })
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
