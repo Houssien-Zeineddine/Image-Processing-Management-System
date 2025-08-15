@@ -7,7 +7,7 @@ const app = express()
 
 app.use(express.json()) 
 
-//connect to DB
+//connect to DB and start server
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
