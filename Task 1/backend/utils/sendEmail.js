@@ -31,3 +31,5 @@ const sendEmail = async (to, subject, html) => {
         console.log('Failed to send email:', error)
     }
 }
+
+module.exports = sendEmail
