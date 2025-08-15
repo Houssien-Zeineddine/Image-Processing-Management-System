@@ -22,7 +22,7 @@ camera.position.setZ(10)
 
 //3d geometry shape addition
 const geometry = new THREE.SphereGeometry( 2, 32, 16 )
-const material = new THREE.MeshStandardMaterial({color: 0xFF6347})
+const material = new THREE.MeshStandardMaterial({color: 0xFF6347, wireframe: true})
 const sphere = new THREE.Mesh( geometry, material )
 
 scene.add( sphere )
