@@ -1,5 +1,6 @@
 const Image = require('../models/Image')
 const Job = require('../models/job')
+const { advancedQueue } = require('./advanedProcessorController')   
 
 const uploadAdvancedImage = async (req, res) => {
     try {
