@@ -52,3 +52,5 @@ const worker = new Worker('imageQueue', async job => {
     dbJob.completedAt = new Date()
     await dbJob.save()
 }, { connection })
+
+module.exports = { imageQueue }
