@@ -96,4 +96,8 @@ const advancedWorker = new Worker('advancedQueue', async job => {
         fileSize: newBuffer.length
     })
 
+    dbJob.status = 'completed';
+    dbJob.completedAt = new Date();
+    await dbJob.save();
+
 })
