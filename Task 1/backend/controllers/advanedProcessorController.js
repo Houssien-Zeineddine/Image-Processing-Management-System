@@ -24,7 +24,7 @@ const advancedWorker = new Worker('advancedQueue', async job => {
     const { width, height } = info
 
     const pixels = []
-    for (let y = 0; y < heightl; y++) {
+    for (let y = 0; y < height; y++) {
         const row = []
         for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4
@@ -42,7 +42,7 @@ const advancedWorker = new Worker('advancedQueue', async job => {
         [0, -1, 0],
         [-1, 5, -1],
         [0, -1, 0]
-    ];
+    ]
 
     const applyKernel = (pixels, kernel) => {
         const output = []
@@ -54,12 +54,12 @@ const advancedWorker = new Worker('advancedQueue', async job => {
                 let r = 0, g = 0, b = 0
                 for (let ky = 0; ky < kernel.length; ky++) {
                     for (let kx = 0; kx < kernel[0].length; kx++) {
-                        const yy = y + ky - kCenter;
-                        const xx = x + kx - kCenter;
+                        const yy = y + ky - kCenter
+                        const xx = x + kx - kCenter
                         if (yy >= 0 && yy < pixels.length && xx >= 0 && xx < pixels[0].length) {
-                            r += pixels[yy][xx].r * kernel[ky][kx];
-                            g += pixels[yy][xx].g * kernel[ky][kx];
-                            b += pixels[yy][xx].b * kernel[ky][kx];
+                            r += pixels[yy][xx].r * kernel[ky][kx]
+                            g += pixels[yy][xx].g * kernel[ky][kx]
+                            b += pixels[yy][xx].b * kernel[ky][kx]
                         }
                     }
                 }
@@ -82,10 +82,10 @@ const advancedWorker = new Worker('advancedQueue', async job => {
         for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4;
             const px = processedPixels[y][x];
-            newBuffer[idx] = px.r;
-            newBuffer[idx + 1] = px.g;
-            newBuffer[idx + 2] = px.b;
-            newBuffer[idx + 3] = px.a;
+            newBuffer[idx] = px.r
+            newBuffer[idx + 1] = px.g
+            newBuffer[idx + 2] = px.b
+            newBuffer[idx + 3] = px.a
         }
     }
 
@@ -96,16 +96,21 @@ const advancedWorker = new Worker('advancedQueue', async job => {
         fileSize: newBuffer.length
     })
 
-    dbJob.status = 'completed';
-    dbJob.completedAt = new Date();
-    await dbJob.save();
+    dbJob.status = 'completed'
+    dbJob.completedAt = new Date()
+    await dbJob.save()
 
     if (dbJob.userEmail) {
-        const subject = `Advanced Image Processing Completed: ${originalImage.filename}`;
+        const subject = `Advanced Image Processing Completed: ${originalImage.filename}`
         const html = `<h3>Your advanced image processing job is complete!</h3>
             <p><b>Original file:</b> ${originalImage.filename}</p>
-            <p><b>Processed image:</b> sharpened/enhanced successfully</p>`;
+            <p><b>Processed image:</b> sharpened/enhanced successfully</p>`
         await sendEmail(dbJob.userEmail, subject, html);
     }
 
-}, { connection });
+}, { connection })
+
+advancedWorker.on('ready', () => console.log('Advanced worker ready'))
+advancedWorker.on('failed', (job, err) => console.error(`Advanced job ${job.id} failed`, err))
+
+module.exports = { advancedQueue }
