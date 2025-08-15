@@ -1,10 +1,8 @@
-const IORedis = require('ioredis')
 const { Queue, Worker } = require('bullmq')
 const Job = require('../models/job') 
 const Image = require('../models/Image')
 const sharp = require('sharp')
-
-const connection = new IORedis()
+const connection = require('../redis/connection')
 
 //create a queue
 const imageQueue = new Queue('imageQueue', { connection })
@@ -33,7 +31,7 @@ const worker = new Worker('imageQueue', async job => {
                 name: `${originalImage.name}-${target.width}x${target.height}`,
                 filename: originalImage.filename,
                 fileData: resizedBuffer,
-                filesize: resizedBuffer.length
+                fileSize: resizedBuffer.length
             })
 
             target.status = 'completed'
@@ -44,7 +42,7 @@ const worker = new Worker('imageQueue', async job => {
         } catch( error ) {
             target.status = 'failed'
             await dbJob.save()
-            console.log(`Resized ${originalImage.name} to ${target.width}x${target.height}`);
+            console.log(`Failed to resize ${originalImage.name} to ${target.width}x${target.height}`, error)
         }
     }
 
@@ -52,5 +50,13 @@ const worker = new Worker('imageQueue', async job => {
     dbJob.completedAt = new Date()
     await dbJob.save()
 }, { connection })
+
+worker.on('ready', () => {
+    console.log('🚀 Worker is ready and connected to Redis');
+});
+
+worker.on('failed', (job, err) => {
+    console.error(`❌ Job ${job.id} failed:`, err);
+});
 
 module.exports = { imageQueue }
