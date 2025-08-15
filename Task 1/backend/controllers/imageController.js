@@ -39,16 +39,15 @@ const getImageById = async (req, res) => {
 }
 
 const deleteImage = async (req, res) => {
-    try {
-
-    } catch (error) {
-
-    }
+    const image = await Image.findByIdAndDelete(req.params.id)
+    if(!image) return res.status(404).json({ error: 'Image not found' })
+    res.json({ message: 'Image deleted' })
 }
 
 
 module.exports = {
     uploadImage,
     getImages,
-    getImageById
+    getImageById,
+    deleteImage
 }
