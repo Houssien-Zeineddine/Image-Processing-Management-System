@@ -55,7 +55,9 @@ const getImageById = async (req, res) => {
     
     const type = await FileType.fileTypeFromBuffer(image.fileData)
 
-    res.set('Content-Type', type.mime)
+    const contentType = (type && type.mime) || 'application/octet-stream';
+
+    res.set('Content-Type', contentType)
     res.send(image.fileData)
 }
 
